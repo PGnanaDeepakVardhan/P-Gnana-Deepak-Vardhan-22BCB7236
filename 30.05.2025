@@ -1,0 +1,232 @@
+> db.products.find({price: {$eq: 899}},{name: 1, price: 1})
+< {
+  _id: 2,
+  name: 'xTablet',
+  price: 899
+}
+{
+  _id: 3,
+  name: 'SmartTablet',
+  price: 899
+}
+> db.products.find({colour: "black"},{name:1, colour:1})
+< "spec.ram": {
+    $eq: 4
+  },
+  name: 1,
+  "spec.ram": 1
+})
+< {
+  _id: 1,
+  name: 'xPhone',
+  spec: {
+    ram: 4
+  }
+}
+{
+  _id: 5,
+  name: 'SmartPhone',
+  spec: {
+    ram: 4
+  }
+}
+> db.products.find({price: {$lt:800}},{name: 1, _id:0})
+< {
+  name: 'xPhone'
+}
+{
+  name: 'SmartPad'
+}
+{
+  name: 'SmartPhone'
+}
+> db.products.find({"spec.screen": {$lt:7}},{name:1,"spec.screen":1})
+< {
+  _id: 1,
+  name: 'xPhone',
+  spec: {
+    screen: 6.5
+  }
+}
+> db.products.find({storage:{$lt:128}},{name:1,_id:0})
+< {
+  name: 'xPhone'
+}
+{
+  name: 'SmartTablet'
+}
+> db.products.find({"spec.cpu":{$lte: 3.66}},{name:1,_id:1})
+< {
+  _id: 1,
+  name: 'xPhone'
+}
+{
+  _id: 2,
+  name: 'xTablet'
+}
+{
+  _id: 3,
+  name: 'SmartTablet'
+}
+{
+  _id: 4,
+  name: 'SmartPad'
+}
+{
+  _id: 5,
+  name: 'SmartPhone'
+}
+> db.products.find({price: {$gt: 500}},{name: 1, _id:1})
+< {
+  _id: 1,
+  name: 'xPhone'
+}
+{
+  _id: 2,
+  name: 'xTablet'
+}
+{
+  _id: 3,
+  name: 'SmartTablet'
+}
+{
+  _id: 4,
+  name: 'SmartPad'
+}
+{
+  _id: 5,
+  name: 'SmartPhone'
+}
+> db.products.find({"spec.screen": {$gt: 7.0}},{name:1,_id:1})
+< {
+  _id: 2,
+  name: 'xTablet'
+}
+{
+  _id: 3,
+  name: 'SmartTablet'
+}
+{
+  _id: 4,
+  name: 'SmartPad'
+}
+{
+  _id: 5,
+  name: 'SmartPhone'
+}
+> db.products.find({price: {$ne: 899}}, {name: 1, _id:1, price:1})
+< {
+  _id: 1,
+  name: 'xPhone',
+  price: 799
+}
+{
+  _id: 4,
+  name: 'SmartPad',
+  price: 699
+}
+{
+  _id: 5,
+  name: 'SmartPhone',
+  price: 599
+}
+> db.products.find({"spec.screen": {$ne: 6.5}}, {name: 1, _id:1, screen:1})
+< {
+  _id: 2,
+  name: 'xTablet'
+}
+{
+  _id: 3,
+  name: 'SmartTablet'
+}
+{
+  _id: 4,
+  name: 'SmartPad'
+}
+{
+  _id: 5,
+  name: 'SmartPhone'
+}
+> db.products.find({price: {$in: }},{name: 1, _id:1, price: 1})
+< {
+  _id: 1,
+  name: 'xPhone',
+  price: 799
+}
+{
+  _id: 4,
+  name: 'SmartPad',
+  price: 699
+}
+> db.products.find({_id: {$in:}}, { name: 1, _id:1, price:1})
+< {
+  _id: 1,
+  name: 'xPhone',
+  price: 799
+}
+{
+  _id: 2,
+  name: 'xTablet',
+  price: 899
+}
+> db.products.find({"spec.screen": {$in: [6.5,9.5]}},{name: 1, _id:1})
+< {
+  _id: 1,
+  name: 'xPhone'
+}
+{
+  _id: 2,
+  name: 'xTablet'
+}
+> db.products.find({"releaseDate": {$in: [ISODate("2015-01-14")]}},{name:1, _id:1, price:1})
+< {
+  _id: 3,
+  name: 'SmartTablet',
+  price: 899
+}
+> db.products.find({_id: {$nin:}},{name:1, _id:1, price:1})
+< {
+  _id: 1,
+  name: 'xPhone',
+  price: 799
+}
+{
+  _id: 5,
+  name: 'SmartPhone',
+  price: 599
+}
+> db.products.find({colour:{$nin: [/^g+/, /^w+/]}},{name:1, colour:1})
+< {
+  _id: 1,
+  name: 'xPhone',
+}
+{
+  _id: 2,
+  name: 'xTablet'
+}
+{
+  _id: 3,
+  name: 'SmartTablet'
+}
+{
+  _id: 4,
+  name: 'SmartPad'
+}
+{
+  _id: 5,
+  name: 'SmartPhone'
+}
+> db.products.find({name:{$in: [/^S+/]}},{name:1, _id:1})
+< {
+  _id: 3,
+  name: 'SmartTablet'
+}
+{
+  _id: 4,
+  name: 'SmartPad'
+}
+{
+  _id: 5,
+  name: 'SmartPhone'
+}
+operators>
