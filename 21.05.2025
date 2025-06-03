@@ -1,0 +1,161 @@
+show databases;
+show tables from vitap;
+use vitap;
+select * from cse;
+
+update cse set s_marks =s_marks-20; 
+
+# between 
+desc cse;
+select s_name from cse where s_marks between 85 and 95;
+
+# not between 
+select s_name from cse where s_marks not between 85 and 95;
+
+#between with in 
+select s_name from cse where s_marks between 86 and 95 and s_id IN (11,12,13,14);
+
+#Aggregate function 
+# sum, max, min, counnt, avg
+
+desc cse;
+
+#sum
+select sum(s_marks) from cse 
+where s_id IN (11,12,13);
+
+#count
+select count(s_id) from cse
+where s_marks =95;
+
+#avg
+select avg(s_marks) from cse;
+
+#min
+select min(s_marks) from cse;
+
+#max
+select max(s_marks) from cse 
+where s_id IN (14,13,12);
+
+#union operator;
+create database vitap1;
+
+use vitap1;
+
+create table worker(
+ c_id int,
+ c_name varchar(30),
+ c_totalPurchases int,
+ c_place varchar(10)
+ );
+ insert into worker(c_id, c_name,c_totalPurchases, c_place)
+ values(11,'meena',76,'India'),
+ (12,'lokesh',36,'India'),
+ (13,'suman',87,'India'),
+ (14,'tarun',14,'India'),
+ (15,'rekha',43,'India'),
+ (16,'aditya',57,'India'),
+ (17,'kavya',98,'India'),
+ (18,'rahul',39,'India'),
+ (19,'neha',607,'India'),
+ (20,'jatin',52,'India');
+ 
+ drop table worker1;
+ create table worker1(
+ c_id int,
+ c_name varchar(30),
+ c_totalPurchases int,
+ c_place varchar(10)
+ );
+ 
+ insert into worker1(c_id, c_name,c_totalPurchases, c_place)
+ values(11,'meena',76,'India'),
+ (12,'lokesh',36,'India'),
+ (13,'suman',87,'India'),
+ (14,'tarun',14,'India'),
+ (15,'rekha',43,'India'),
+ (16,'aditya',57,'India'),
+ (17,'kavya',98,'India')
+ ;
+
+ 
+ show tables from vitap1;
+ 
+ #union 
+ 
+ select c_name from worker
+ union 
+ select c_name from worker1;
+ 
+ #union all - shows all distinct values 
+ 
+ select c_name from worker
+ union all  
+ select c_name from worker1;
+ 
+ desc worker;
+ #union where 
+ select* from worker;
+ 
+ select distinct c_name from worker;
+ 
+ select c_name, c_id from worker
+ where c_place = 'India'
+ union 
+ select c_name, c_id from worker1
+ where c_place ='Pakistan';
+ 
+ select c_name, c_id from worker
+ where c_place = 'India'
+ union all
+ select c_name, c_id from worker1
+ where c_place ='Pakistan';
+ 
+ use vitap1;
+ 
+ # SQL case statement
+ select distinct c_name, c_id, c_totalPurchases, 
+	case
+    when c_totalPurchases >43 then 'big purchaser'
+    when c_totalPurchases =43 then 'medium purchaser'
+    else 'small purchaser'
+    end
+    as purchaserType
+    from worker;
+    
+    desc worker;
+    
+ # SQL clause - orderby
+ 
+ select distinct c_totalPurchases as productsBuyed, c_name as custmerName
+ from worker
+ order by productsBuyed ASC;
+ 
+ select distinct c_name, c_totalPurchases from worker
+ where c_totalPurchases>40 
+ order by c_totalPurchases;
+ 
+ # like clause
+ # wildcart operators (%) and (_)
+ 
+ select distinct c_name, c_id, c_place 
+ from worker
+ where c_name like '%a';
+ 
+ # SQL create veiw
+ 
+ create view workers as
+ select c_id, c_name, c_place 
+ from worker
+ where c_id>16;
+ 
+ select * from workers;
+ 
+ create or replace view workers as
+ select distinct * from worker ;
+ 
+ select * from workers;
+ 
+ # distinct keyword
+ select distinct c_name from worker;
