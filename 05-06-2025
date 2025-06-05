@@ -1,0 +1,174 @@
+use vit
+switched to db vit
+db.sales.insertMany([
+	{ "_id" : 1, "item" : "Americanos", "price" : 5, "size": "Short", "quantity" : 22, "date" : ISODate("2022-01-15T08:00:00Z") },
+	{ "_id" : 2, "item" : "Cappuccino", "price" : 6, "size": "Short","quantity" : 12, "date" : ISODate("2022-01-16T09:00:00Z") },
+	{ "_id" : 3, "item" : "Lattes", "price" : 15, "size": "Grande","quantity" : 25, "date" : ISODate("2022-01-16T09:05:00Z") },
+	{ "_id" : 4, "item" : "Mochas", "price" : 25,"size": "Tall", "quantity" : 11, "date" : ISODate("2022-02-17T08:00:00Z") },
+	{ "_id" : 5, "item" : "Americanos", "price" : 10, "size": "Grande","quantity" : 12, "date" : ISODate("2022-02-18T21:06:00Z") },
+	{ "_id" : 6, "item" : "Cappuccino", "price" : 7, "size": "Tall","quantity" : 20, "date" : ISODate("2022-02-20T10:07:00Z") },
+	{ "_id" : 7, "item" : "Lattes", "price" : 25,"size": "Tall", "quantity" : 30, "date" : ISODate("2022-02-21T10:08:00Z") },
+	{ "_id" : 8, "item" : "Americanos", "price" : 10, "size": "Grande","quantity" : 21, "date" : ISODate("2022-02-22T14:09:00Z") },
+	{ "_id" : 9, "item" : "Cappuccino", "price" : 10, "size": "Grande","quantity" : 17, "date" : ISODate("2022-02-23T14:09:00Z") },
+	{ "_id" : 10, "item" : "Americanos", "price" : 8, "size": "Tall","quantity" : 15, "date" : ISODate("2022-02-25T14:09:00Z")}
+]);
+MongoBulkWriteError: E11000 duplicate key error collection: vit.sales index: _id_ dup key: { _id: 1 }
+db.sales.drop()
+true
+db.sales.insertMany([
+	{ "_id" : 1, "item" : "Americanos", "price" : 5, "size": "Short", "quantity" : 22, "date" : ISODate("2022-01-15T08:00:00Z") },
+	{ "_id" : 2, "item" : "Cappuccino", "price" : 6, "size": "Short","quantity" : 12, "date" : ISODate("2022-01-16T09:00:00Z") },
+	{ "_id" : 3, "item" : "Lattes", "price" : 15, "size": "Grande","quantity" : 25, "date" : ISODate("2022-01-16T09:05:00Z") },
+	{ "_id" : 4, "item" : "Mochas", "price" : 25,"size": "Tall", "quantity" : 11, "date" : ISODate("2022-02-17T08:00:00Z") },
+	{ "_id" : 5, "item" : "Americanos", "price" : 10, "size": "Grande","quantity" : 12, "date" : ISODate("2022-02-18T21:06:00Z") },
+	{ "_id" : 6, "item" : "Cappuccino", "price" : 7, "size": "Tall","quantity" : 20, "date" : ISODate("2022-02-20T10:07:00Z") },
+	{ "_id" : 7, "item" : "Lattes", "price" : 25,"size": "Tall", "quantity" : 30, "date" : ISODate("2022-02-21T10:08:00Z") },
+	{ "_id" : 8, "item" : "Americanos", "price" : 10, "size": "Grande","quantity" : 21, "date" : ISODate("2022-02-22T14:09:00Z") },
+	{ "_id" : 9, "item" : "Cappuccino", "price" : 10, "size": "Grande","quantity" : 17, "date" : ISODate("2022-02-23T14:09:00Z") },
+	{ "_id" : 10, "item" : "Americanos", "price" : 8, "size": "Tall","quantity" : 15, "date" : ISODate("2022-02-25T14:09:00Z")}
+]);
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': 1,
+    '1': 2,
+    '2': 3,
+    '3': 4,
+    '4': 5,
+    '5': 6,
+    '6': 7,
+    '7': 8,
+    '8': 9,
+    '9': 10
+  }
+}
+db.sales.aggregate([{$group:{_id:null,maxprice:{$max:"$price"}}}])
+{
+  _id: null,
+  maxprice: 25
+}
+db.sales.aggregate([
+    { $group: { _id: null, maxPrice: { $max: "$price" } } }
+])
+{
+  _id: null,
+  maxPrice: 25
+}
+db.sales.aggregate([{ $group: { _id: null, maxQty: { $max: "$quantity" } } }, { $project: { _id: 0 } }]);
+{
+  maxQty: 30
+}
+db.sales.aggregate([
+    {
+        $addFields: {
+            totalValue: { $multiply: ["$price", "$quantity"] }
+        }
+    },
+    {
+        $group: {
+            _id: null,
+            maxTotalValue: { $max: "$totalValue" }
+        }
+    }
+])
+{
+  _id: null,
+  maxTotalValue: 750
+}
+db.sales.aggregate([
+    { $addFields: { totalValue: { $multiply: ["$price", "$quantity"] } } },
+    { $sort: { totalValue: -1 } },
+    { $limit: 1 },
+    { $project: { item: 1, totalValue: 1, _id: 0 } }
+])
+{
+  item: 'Lattes',
+  totalValue: 750
+}
+db.sales.aggregate([{$group:{_id:"$item",max_qt:{$max:"$quantity"}}},{$sort:{max_qt:-1}},{$limit:2}]).skip(1);
+{
+  _id: 'Americanos',
+  max_qt: 22
+}
+db.sales.aggregate([  {
+    $group: {
+      _id: "$item",
+      quantities: { $push: "$quantity" }
+    }
+  },  {
+    $addFields: {
+      sortedQuantities: {
+        $sortArray: { input: "$quantities", sortBy: -1 }
+      }
+    }
+  },  {
+    $project: {
+      _id: 0,
+      item: "$_id",
+      secondMaxQuantity: { $arrayElemAt: ["$sortedQuantities", 1] }
+    }
+  }
+])
+{
+  item: 'Cappuccino',
+  secondMaxQuantity: 17
+}
+{
+  item: 'Mochas'
+}
+{
+  item: 'Lattes',
+  secondMaxQuantity: 25
+}
+{
+  item: 'Americanos',
+  secondMaxQuantity: 21
+}
+db.sales.getIndexes()
+[ { v: 2, key: { _id: 1 }, name: '_id_' } ]
+db.sales.createIndex({item:1})
+item_1
+db.sales.getIndexes()
+[
+  { v: 2, key: { _id: 1 }, name: '_id_' },
+  { v: 2, key: { item: 1 }, name: 'item_1' }
+]
+db.sales.dropIndex({item:1})
+{ nIndexesWas: 2, ok: 1 }
+db.users.insertMany([{email: "john@test.com", name:"john"},{emaail: "jane@test.com", name:"jane"},]);
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId('6841a3ccbdbf78f956952f53'),
+    '1': ObjectId('6841a3ccbdbf78f956952f54')
+  }
+}
+db.users.createIndex({email:1},{unique:true})
+email_1
+db.users.drop()
+true
+db.users.insertMany([{email: "john@test.com", name:"john"},{email: "john@test.com", name:"john"},{emaail: "jane@test.com", name:"jane"},]);
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId('6841a3e2bdbf78f956952f55'),
+    '1': ObjectId('6841a3e2bdbf78f956952f56'),
+    '2': ObjectId('6841a3e2bdbf78f956952f57')
+  }
+}
+db.users.createIndex({email:1},{unique:true})
+
+MongoServerError[DuplicateKey]: Index build failed: 3e02f90d-727f-4ff3-8733-dbdc1a818b07: Collection vit.users ( 18c3a0d8-9793-46e8-bf36-2925820d10bf ) :: caused by :: E11000 duplicate key error collection: vit.users index: email_1 dup key: { email: "john@test.com" }
+db.users.createIndex({email:1},{unique:true})
+
+;
+MongoServerError[DuplicateKey]: Index build failed: 4fdb2ce0-9608-4795-b0e5-84a8e34f23ad: Collection vit.users ( 18c3a0d8-9793-46e8-bf36-2925820d10bf ) :: caused by :: E11000 duplicate key error collection: vit.users index: email_1 dup key: { email: "john@test.com" }
+db.locations.insertOne({address: "Downtown san jose ca, usaa", lat: 37.33548, long:  -121.893028})
+{
+  acknowledged: true,
+  insertedId: ObjectId('6841a4a4bdbf78f956952f58')
+}
+db.locations.createIndex({ late:1, long:1}, {unique:true});
+late_1_long_1
+db.movies.createIndex({title:1, year:1})
+title_1_year_1
