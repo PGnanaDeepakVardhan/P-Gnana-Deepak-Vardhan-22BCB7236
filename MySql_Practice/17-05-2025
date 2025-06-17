@@ -1,0 +1,111 @@
+show databases;
+create database college;
+
+use college;
+
+create table it(
+roll_no int,
+student_name varchar(30),
+total_marks int,
+year_of_joining int
+);
+
+desc college;
+
+select * from it;
+
+insert into it(roll_no, student_name, total_marks, year_of_joining)
+values(1,'ayushi',100,2022),
+      (2,'vaibhav',98,2022),
+      (3,'kashish',97,2022);
+
+create database flipzone;
+
+use flipzone;
+
+create table users(
+user_id int,
+user_name varchar(30),
+total_purchases int,
+user_location varchar(10)
+);
+
+insert into users(user_id, user_name, total_purchases, user_location)
+values(1,'sakshi',56,'India'),
+      (2,'vaibahv',26,'India'),
+      (3,'bhojraj',77,'India'),
+      (4,'rohini',4,'India'),
+      (5,'rani',33,'India'),
+      (6,'prashanth',67,'India'),
+      (7,'madhuri',88,'India'),
+      (8,'rohan',29,'India'),
+      (9,'nita',907,'India'),
+      (10,'dilip',32,'India');
+
+select * from users;
+
+create table vendors(
+vendor_id int,
+vendor_name varchar(30),
+products_sold int,
+year_joined int
+);
+
+insert into vendors(vendor_id, vendor_name, products_sold, year_joined)
+values(1,'kriti',747238,'2011'),
+      (2,'ulti',2447,'2014'),
+      (3,'ramesh',7745,'2023'),
+      (4,'kali',454,'2021'),
+      (5,'das',586,'2023'),
+      (6,'harshith',54,'2014'),
+      (7,'kumar',64,'2010'),
+      (8,'niraj',565,'2023'),
+      (9,'nikitha',684146,'2020'),
+      (10,'komal',2626,'2024');
+
+select * from vendors;
+
+show databases;
+
+create table staff(
+emp_id int,
+emp_name varchar(30),
+project_count int,
+joining_year int
+);
+
+insert into staff(emp_id, emp_name, project_count, joining_year)
+values(1,'sakshi',7,'2011'),
+      (2,'ulti',2,'2014'),
+      (3,'ramesh',7,'2023'),
+      (4,'kali',4,'2021'),
+      (5,'das',5,'2023'),
+      (6,'harshith',5,'2014'),
+      (7,'kumar',6,'2010'),
+      (8,'niraj',5,'2023'),
+      (9,'nikitha',6,'2020'),
+      (10,'komal',2,'2024');
+
+select * from staff;
+
+desc staff;
+
+use college;
+select * from it;
+alter table it add(
+    contact_no varchar(10),
+    tech_skills varchar(50)
+);
+select * from it;
+
+alter table it drop column tech_skills;
+select * from it;
+alter table it add(
+    nationality varchar(30) default 'India'
+);
+
+select * from it;
+alter table it drop column contact_no;
+
+update it set total_marks = 100 where roll_no = 2;
+update it set total_marks = total_marks + 50;
