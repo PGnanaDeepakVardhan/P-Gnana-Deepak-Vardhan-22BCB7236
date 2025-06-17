@@ -1,86 +1,91 @@
+# delete, drop and truncate
+#drop -DDL - DB, table, Column
+
 show databases;
+create database techzone;
+#drop is a permanent action
+drop database techzone;
 
-create database gitam;
+use infosys;
+show tables from infosys;
 
-drop database gitam;
+create table developers(
+id int);
 
-use vit;
+drop table developers;
+desc employee_data;
 
-show tables from vit;
-
-create table mtech(
-id int
-);
-
-drop table mtech;
-
-desc first_year;
-
-alter table first_year add(
-s_country varchar(30) default 'India'
+alter table employee_data add(
+country varchar(30) default 'India'
 ); 
+select * from employee_data;
 
-select * from first_year;
+alter table employee_data drop column country;
 
-alter table first_year drop column s_country;
+#delete
+# delete table - deletes the information not the structure eof the table.
 
 show databases;
+use flipkart;
+show tables from flipkart;
 
-use amazon;
+select* from staff;
+delete from staff;
 
-show tables from amazon;
+#delete particular 
+delete from staff where emp_id =3;
 
-select * from employee;
+delete from staff where projects_handled<5;
 
-delete from employee;
+#truncate
+#does not make changes in the structure of the table.
+truncate table staff; 
+desc staff;
 
-delete from employee where e_id = 3;
+# we cannot rollback the transcation in truncate.
+# we ccan rollback the transcation in delete;
+# drop- it permanently deltes the complete table;
 
-delete from employee where e_handlingNoOfProjects < 5;
+# all the laptops should be connnected in the lan cable
+# only then we can perform operations like revoke & grant;
 
-truncate table employee;
+#grant is to provide permission to access a particular database
+#revoke is the take back the permission or withdraw permission from the user.
+#transcation control
+#savepoint - u can save if savepoint 1,2,3 like that...
+#rollback
+#commit - want to save as a permanent change.
 
-desc employee;
-
-create database gitam;
-
-use gitam;
-
-create table cse(
+create database techzone;
+use techzone;
+create table engineering(
 id int,
 name varchar(30)
 );
-
 start transaction;
-
-insert into cse values (1001, 'sakshi');
-
+insert into engineering values (1001,'deepak');
 savepoint t11;
-
-insert into cse values (1002, 'vaibhav');
-
+insert into engineering values(1002,'vardhan');
 savepoint t12;
 
-delete from cse where id = 1002;
-
-select * from cse;
-
+delete from engineering where id =1002;
+select * from engineering;
 rollback to t12;
 
-select * from cse;
-
+select * from engineering;
 commit;
 
-use amazon;
+use flipkart;
+select* from staff;
+select emp_name as Employee_Name from staff;
 
-select * from employee;
+desc staff;
 
-select e_name as Employee_Name from employee;
+#operators logical and compar
+#and , or
+select* from staff;
+select emp_name as Employee_name from staff where projects_handled>6;
 
-desc employee;
-
-select * from employee;
-
-select e_name as Employee_name from employee where e_handlingNoOfProjects > 6;
-
-select * from members where membership_number IN (1, 2, 3);
+#in ans not in operator
+# select * from users where 'user_id' IN (1,2,3);
+# the above query gives the rows where user_id is 1,2 or 3.
