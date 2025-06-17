@@ -1,0 +1,112 @@
+package curd_operation;
+
+import java.sql.*;
+import java.util.Scanner;
+
+public class curdOperation {
+
+    Scanner sc = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        curdOperation ops = new curdOperation();
+
+        System.out.println("Enter number of students to insert:");
+        int n = ops.sc.nextInt();
+        ops.sc.nextLine();
+        for (int i = 0; i < n; i++) {
+            System.out.print("ID: ");
+            int id = ops.sc.nextInt(); ops.sc.nextLine();
+            System.out.print("Name: ");
+            String name = ops.sc.nextLine();
+            System.out.print("Phone: ");
+            String phone = ops.sc.nextLine();
+            System.out.print("Email: ");
+            String email = ops.sc.nextLine();
+            ops.create_data(id, name, phone, email);
+        }
+
+        ops.read_all_data();
+        ops.read_data_with_condition();
+
+        System.out.println("Updating record (id 1 to id 10)...");
+        ops.update_data(1, 10, "UpdatedName", "9999999999", "updated@email.com");
+
+        ops.alterTable();
+    }
+
+    public void create_data(int s_id, String s_name, String s_phno, String s_email) {
+        try (Connection conn = new DBconnection().get_connection();
+             PreparedStatement ps = conn.prepareStatement("INSERT INTO first_year VALUES (?, ?, ?, ?)")) {
+            ps.setInt(1, s_id);
+            ps.setString(2, s_name);
+            ps.setString(3, s_phno);
+            ps.setString(4, s_email);
+            ps.executeUpdate();
+            System.out.println("Inserted: " + s_name);
+        } catch (Exception e) {
+            System.out.println("Insert Error: " + e);
+        }
+    }
+
+    public void read_all_data() {
+        try (Connection conn = new DBconnection().get_connection();
+             PreparedStatement ps = conn.prepareStatement("SELECT * FROM first_year");
+             ResultSet rs = ps.executeQuery()) {
+            System.out.println("\n--- Student Table ---");
+            while (rs.next()) {
+                System.out.printf("ID: %d | Name: %s | Phone: %s | Email: %s%n",
+                        rs.getInt("s_id"), rs.getString("s_name"), rs.getString("s_phno"), rs.getString("s_email"));
+            }
+        } catch (Exception e) {
+            System.out.println("Read Error: " + e);
+        }
+    }
+
+    public void read_data_with_condition() {
+        System.out.print("\nEnter ID to search: ");
+        int id = sc.nextInt();
+        try (Connection conn = new DBconnection().get_connection();
+             PreparedStatement ps = conn.prepareStatement("SELECT * FROM first_year WHERE s_id = ?")) {
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                System.out.println("Record Found:");
+                System.out.printf("ID: %d | Name: %s | Phone: %s | Email: %s%n",
+                        rs.getInt("s_id"), rs.getString("s_name"), rs.getString("s_phno"), rs.getString("s_email"));
+            } else {
+                System.out.println("No student with ID: " + id);
+            }
+        } catch (Exception e) {
+            System.out.println("Conditional Read Error: " + e);
+        }
+    }
+
+    public void update_data(int s_id, int new_id, String name, String phone, String email) {
+        try (Connection conn = new DBconnection().get_connection();
+             PreparedStatement ps = conn.prepareStatement(
+                     "UPDATE first_year SET s_id = ?, s_name = ?, s_phno = ?, s_email = ? WHERE s_id = ?")) {
+            ps.setInt(1, new_id);
+            ps.setString(2, name);
+            ps.setString(3, phone);
+            ps.setString(4, email);
+            ps.setInt(5, s_id);
+            int updated = ps.executeUpdate();
+            if (updated > 0)
+                System.out.println("Update Successful.");
+            else
+                System.out.println("Update Failed. No matching ID.");
+        } catch (Exception e) {
+            System.out.println("Update Error: " + e);
+        }
+    }
+
+    public void alterTable() {
+        try (Connection conn = new DBconnection().get_connection();
+             PreparedStatement ps = conn.prepareStatement("ALTER TABLE first_year ADD COLUMN IF NOT EXISTS s_address VARCHAR(100)")) {
+            ps.executeUpdate();
+            System.out.println("Column 's_address' added.");
+        } catch (Exception e) {
+            System.out.println("Alter Error: " + e);
+        }
+    }
+}
