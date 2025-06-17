@@ -1,0 +1,86 @@
+show databases;
+
+create database gitam;
+
+drop database gitam;
+
+use vit;
+
+show tables from vit;
+
+create table mtech(
+id int
+);
+
+drop table mtech;
+
+desc first_year;
+
+alter table first_year add(
+s_country varchar(30) default 'India'
+); 
+
+select * from first_year;
+
+alter table first_year drop column s_country;
+
+show databases;
+
+use amazon;
+
+show tables from amazon;
+
+select * from employee;
+
+delete from employee;
+
+delete from employee where e_id = 3;
+
+delete from employee where e_handlingNoOfProjects < 5;
+
+truncate table employee;
+
+desc employee;
+
+create database gitam;
+
+use gitam;
+
+create table cse(
+id int,
+name varchar(30)
+);
+
+start transaction;
+
+insert into cse values (1001, 'sakshi');
+
+savepoint t11;
+
+insert into cse values (1002, 'vaibhav');
+
+savepoint t12;
+
+delete from cse where id = 1002;
+
+select * from cse;
+
+rollback to t12;
+
+select * from cse;
+
+commit;
+
+use amazon;
+
+select * from employee;
+
+select e_name as Employee_Name from employee;
+
+desc employee;
+
+select * from employee;
+
+select e_name as Employee_name from employee where e_handlingNoOfProjects > 6;
+
+select * from members where membership_number IN (1, 2, 3);
