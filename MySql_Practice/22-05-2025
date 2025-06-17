@@ -1,0 +1,121 @@
+USE vit;
+
+# View data
+SELECT * FROM worker1;
+SELECT * FROM worker;
+
+# Department with max employees
+SELECT COUNT(department)
+FROM worker1
+GROUP BY department
+ORDER BY COUNT(department) DESC
+LIMIT 1;
+
+# Department with lowest total salary
+SELECT department, SUM(salary) AS sume 
+FROM worker1 
+GROUP BY department 
+ORDER BY sume 
+LIMIT 1;
+
+# Total salary per department
+SELECT department, SUM(salary) 
+FROM worker1 
+GROUP BY department;
+
+# Departments with more than 3 employees
+SELECT department, COUNT(department) 
+FROM worker1
+GROUP BY department 
+HAVING COUNT(department) > 3;
+
+# Department with highest total salary
+SELECT department, SUM(salary) AS sume 
+FROM worker1
+GROUP BY department 
+ORDER BY sume DESC 
+LIMIT 1;
+
+# Department with 2nd highest total salary
+SELECT department, SUM(salary) 
+FROM worker1
+GROUP BY department
+ORDER BY SUM(salary) DESC
+LIMIT 1 OFFSET 1;
+
+# Person with max salary
+SELECT first_name, department 
+FROM worker1 
+WHERE salary = (SELECT MAX(salary) FROM worker1);
+
+# Employees earning above average salary
+SELECT first_name, department, salary 
+FROM worker1 
+WHERE salary > (SELECT AVG(salary) FROM worker1);
+
+# Create student table
+CREATE TABLE student(
+  s_id INT,
+  s_name VARCHAR(25)
+);
+
+INSERT INTO student VALUES
+(101, 'Jayanth'),
+(102, 'Karthik'),
+(103, 'Praveen'),
+(105, 'Mahesh'),
+(106, 'Arun');
+
+# Create address table
+CREATE TABLE address(
+  s_id INT,
+  s_address VARCHAR(25)
+);
+
+INSERT INTO address VALUES 
+(101, 'Coimbatore'),
+(104, 'Chennai'),
+(105, 'Pune');
+
+# View all data
+SELECT * FROM student;
+SELECT * FROM address;
+
+# Cross join
+SELECT * FROM student CROSS JOIN address;
+
+# Inner join
+SELECT * 
+FROM student 
+INNER JOIN address 
+ON student.s_id = address.s_id;
+
+# Left join
+SELECT * 
+FROM student 
+LEFT OUTER JOIN address 
+ON student.s_id = address.s_id;
+
+# Right join
+SELECT * 
+FROM student 
+RIGHT OUTER JOIN address 
+ON student.s_id = address.s_id;
+
+# Full join 
+SELECT * 
+FROM student 
+LEFT JOIN address ON student.s_id = address.s_id
+UNION
+SELECT * 
+FROM student 
+RIGHT JOIN address ON student.s_id = address.s_id;
+
+# 5th highest distinct salary
+SELECT DISTINCT salary
+FROM worker1 W1
+WHERE (
+  SELECT COUNT(DISTINCT salary)
+  FROM worker1 W2
+  WHERE W2.salary > W1.salary
+) = 4;
